@@ -19,10 +19,30 @@ locale-gen
 echo "LANG=fr_FR.UTF-8" > /etc/locale.conf
 
 echo "==> Installation des paquets"
-pacman -Syu --needed --noconfirm fastfetch nano reflector
+pacman -Syu --needed --noconfirm fastfetch nano reflector bash-completion  xdg-utils man-db man-pages zram-generator
 
 echo "==> Mise à jour de la liste des miroirs"
 cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak
 reflector --country France,Germany --latest 5 --protocol https --age 12 --sort rate --save /etc/pacman.d/mirrorlist
+
+echo "==> configuration de zram"
+echo "==> configuration de zram"
+rm -f /etc/systemd/zram-generator.conf
+rm -f /etc/udev/rules.d/99-zram-swappiness.rules
+bash -c "cat <<EOF > $udev_rule
+ACTION==\"change\", KERNEL==\"zram0\", ATTR{initstate}==\"1\", SYSCTL{vm.swappiness}=\"150\", \\
+    RUN+=\"/bin/sh -c 'echo N > /sys/module/zswap/parameters/enabled'\"
+EOF"
+
+bash -c "cat <<EOF > $zram_conf
+[zram0]
+compression-algorithm = zstd
+zram-size = ram
+swap-priority = 100
+fs-type = swap
+EOF"
+
+systemctl daemon-reload
+systemctl start /dev/zram0
 
 echo "==> Terminé. Redémarre ou reconnecte-toi pour appliquer clavier et locale."
