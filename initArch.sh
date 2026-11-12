@@ -29,12 +29,12 @@ echo "==> configuration de zram"
 echo "==> configuration de zram"
 rm -f /etc/systemd/zram-generator.conf
 rm -f /etc/udev/rules.d/99-zram-swappiness.rules
-bash -c "cat <<EOF > $udev_rule
+bash -c "cat <<EOF > /etc/udev/rules.d/99-zram-swappiness.rules
 ACTION==\"change\", KERNEL==\"zram0\", ATTR{initstate}==\"1\", SYSCTL{vm.swappiness}=\"150\", \\
     RUN+=\"/bin/sh -c 'echo N > /sys/module/zswap/parameters/enabled'\"
 EOF"
 
-bash -c "cat <<EOF > $zram_conf
+bash -c "cat <<EOF > /etc/systemd/zram-generator.conf
 [zram0]
 compression-algorithm = zstd
 zram-size = ram
