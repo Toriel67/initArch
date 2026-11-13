@@ -53,4 +53,11 @@ systemctl enable --now sshd.service
 systemctl enable --now ufw.service
 ufw enable
 
+pacman -S --needed git base-devel
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin
+makepkg -si
+
+yay -S arch-update-bin
+
 echo "==> Terminé. Redémarre ou reconnecte-toi pour appliquer clavier et locale."
