@@ -1,5 +1,3 @@
-# setup-arch.sh
-
 🇫🇷 [Français](#-français) · 🇬🇧 [English](#-english)
 
 ---
